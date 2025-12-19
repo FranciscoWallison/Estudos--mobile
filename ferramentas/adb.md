@@ -84,3 +84,21 @@ adb reverse tcp:8080 tcp:8080
   * preferir USB; ADB via rede só quando você precisar e em rede isolada
 
 Se você me disser **emulador ou aparelho físico** e **qual objetivo (logcat, captura de tráfego, Frida/MobSF)** eu te passo um fluxo de comandos “padrão” pra triagem rápida de APK malicioso.
+
+
+## comando para bixar apk pelo usb
+```
+$serial="4AD01LH0H"
+$pkg="com.seu.app"
+
+# pega todos os caminhos e remove o prefixo "package:"
+$paths = (adb -s $serial shell pm path $pkg) -replace '^package:',''
+
+# cria pasta
+New-Item -ItemType Directory -Force -Path ".\$pkg" | Out-Null
+
+# baixa tudo
+foreach ($p in $paths) {
+  adb -s $serial pull $p ".\$pkg\"
+}
+```
