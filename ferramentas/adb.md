@@ -86,6 +86,11 @@ adb reverse tcp:8080 tcp:8080
 Se você me disser **emulador ou aparelho físico** e **qual objetivo (logcat, captura de tráfego, Frida/MobSF)** eu te passo um fluxo de comandos “padrão” pra triagem rápida de APK malicioso.
 
 
+Lista arquivos do projeto
+```
+adb -s 4AD01LH0H shell pm path com.seu.app
+```
+
 ## comando para bixar apk pelo usb
 ```
 $serial="4AD01LH0H"
@@ -101,4 +106,27 @@ New-Item -ItemType Directory -Force -Path ".\$pkg" | Out-Null
 foreach ($p in $paths) {
   adb -s $serial pull $p ".\$pkg\"
 }
+
 ```
+
+No final você vai ter uma pasta `.\com.TESTE.CLICK\` com `base.apk` + todos os splits.
+
+## Reinstalar em outro aparelho (mesma arquitetura) ou depois de mexer em arquivos sem “modificar código”
+
+Dentro da pasta onde estão os APKs:
+
+```powershell
+adb -s 4AD01LH0H install-multiple -r base.apk split_*.apk
+```
+
+> Se for instalar em **outro** device, troca o `-s` pelo serial dele.
+
+## Sobre “modificar o projeto”
+
+* Do celular você **não baixa o “projeto”** (Android Studio/Unity). Só dá pra baixar **APK(s)**.
+* Se isso for **Unity (parece que é)**: mesmo extraindo o APK, você **não recupera o projeto Unity**. Dá pra inspecionar recursos, libs, manifest, etc., mas não volta pro “projeto editável” como se tivesse os arquivos originais.
+
+## O que dá pra fazer com segurança (análise)
+
+* **Android Studio → Build → Analyze APK…** e abrir `base.apk` (e olhar splits também).
+* Ver `AndroidManifest.xml`, permissões, libs nativas, assets, etc.
