@@ -109,7 +109,7 @@ foreach ($p in $paths) {
 
 ```
 
-No final você vai ter uma pasta `.\com.TESTE.CLICK\` com `base.apk` + todos os splits.
+No final você vai ter uma pasta `.\com.seu.app\` com `base.apk` + todos os splits.
 
 ## Reinstalar em outro aparelho (mesma arquitetura) ou depois de mexer em arquivos sem “modificar código”
 
@@ -130,3 +130,4 @@ adb -s 4AD01LH0H install-multiple -r base.apk split_*.apk
 
 * **Android Studio → Build → Analyze APK…** e abrir `base.apk` (e olhar splits também).
 * Ver `AndroidManifest.xml`, permissões, libs nativas, assets, etc.
+
