@@ -1,53 +1,37 @@
-Sim, você colou certo. E os seus testes mostram **exatamente o problema**:
-
-* **Android**: `wlan0 = 172.16.1.15/24`
-* **PC**: não tem **nenhum** IP `172.16.1.x` no `ipconfig` (só `192.168.100.3`, `169.254.*`, `26.*` etc.)
-* Por isso `ping 172.16.1.10` deu **Destination Host Unreachable**: esse IP **não é o seu PC** nessa rede.
-
-Resultado: você configurou proxy pra um host que não existe/ não é alcançável.
-
-##  Funciona mesmo com redes diferentes (ADB REVERSE) 
-
-Esse é o melhor pra quando PC e celular não estão na mesma sub-rede (que é o seu caso agora).
-
-### 1) No PC, deixe seu proxy escutando em `127.0.0.1:8080`
-
-(geralmente já é o default)
-
-### 2) Faça o “túnel” USB do Android → PC
 
 ```bash
-adb reverse tcp:8080 tcp:8080
-adb reverse --list
+adb shell settings put global http_proxy 111.254.11.11:8080
 ```
 
-Tem que listar `tcp:8080`.
+Isso grava o proxy global como `host:porta` (com `:` separando). ([Android Enthusiasts Stack Exchange][1])
 
-### 3) Aponte o proxy do Android pra localhost
+### Como validar se pegou
 
 ```bash
-adb shell settings put global http_proxy 127.0.0.1:8080
 adb shell settings get global http_proxy
 ```
 
-### 4) Valide
+Deve retornar `111.254.11.11:8080`. ([The Poet Engineer][2])
 
-Abra no Android:
+### Como desativar
 
-* `http://neverssl.com`
-
-A requisição deve aparecer no seu proxy no PC.
-
-### 5) Desfazer tudo
+O jeito mais comum é:
 
 ```bash
 adb shell settings put global http_proxy :0
-adb reverse --remove tcp:8080
 ```
 
----
 
-## Sobre o “169.254.42.79”
+(Alternativa: deletar as chaves `http_proxy` / `global_http_proxy_host` / `global_http_proxy_port`, mas `:0` normalmente resolve.) ([Stack Overflow][4])
 
-`169.254.*` é IP automático (APIPA) de interface sem DHCP. Ele só serve se **o Android também tiver uma interface nessa ligação** (tipo USB/Ethernet/RNDIS ativa).
-No seu `adb shell ip -4 addr show`, só aparece `wlan0`, então **o Android não está nessa rede 169.254 agora** — por isso não use 169.254 como “regra geral”, só quando a conexão entre PC↔celular for por aquela interface.
+### Sobre o seu IP (111.254.11.11)
+
+* Esse `111.254.11.11` é **link-local/APIPA** do Windows. Funciona **se o Android alcança esse host** — e seu `ping` do Android pro PC confirma que alcança.
+* O que mais costuma dar errado aqui não é o ADB, é o **proxy no PC**:
+
+  1. o Burp/Charles/Fiddler tem que estar **escutando** em `0.0.0.0:8080` ou especificamente em `111.254.11.11:8080` (não só `127.0.0.1`) ([book.jorianwoltjer.com][5])
+  2. **firewall do Windows** liberando entrada na porta 8080 nessa interface.
+
+
+
+Depois de fazer a pote e validar temos que instalar o certificado. [exemplo de video](https://www.youtube.com/watch?v=ZUVUhkh2ELY)
