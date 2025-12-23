@@ -3,6 +3,55 @@
 
 **ADB = Android Debug Bridge**. É a “ponte” oficial pra você controlar um Android (emulador ou aparelho) pelo PC via **USB** ou **rede**. Ele faz isso com 3 peças:
 
+
+* **Celular/tablet** com *Depuração USB* ligada
+* **Emuladores Android** (Android Studio Emulator, Genymotion, alguns casos de MEmu/LDPlayer/BlueStacks se eles expõem ADB)
+
+O comando direto pra ver o que está conectado é:
+
+```bash
+adb devices -l
+```
+
+Vai listar algo tipo:
+
+* `device` = conectado e autorizado
+* `unauthorized` = o aparelho não autorizou (precisa aceitar a janela de “Confiar neste computador?” no Android)
+* `offline` = conexão ruim / travada
+
+### Ver também emuladores
+
+Se o emulador estiver rodando e tiver ADB ativo, ele aparece como:
+
+* `emulator-5554` (comum no Android Studio)
+
+Se você quer ver **mais detalhes** de cada um:
+
+```bash
+adb devices -l
+adb -s <ID> shell getprop ro.product.model
+adb -s <ID> shell getprop ro.build.version.release
+```
+
+### Se não aparece nada
+
+1. Confere se o ADB está ok e reinicia o servidor:
+
+```bash
+adb kill-server
+adb start-server
+adb devices -l
+```
+
+2. Para **celular**: liga *Depuração USB* e aceita a autorização na tela.
+
+3. Para **emulador**: alguns não expõem ADB por padrão. Se ele tiver ADB via TCP, dá pra conectar assim (exemplo):
+
+```bash
+adb connect 127.0.0.1:5555
+adb devices -l
+```
+
 * **adb client** (o comando que você roda no PC)
 * **adb server** (processo que fica escutando no PC)
 * **adbd** (daemon no Android)
