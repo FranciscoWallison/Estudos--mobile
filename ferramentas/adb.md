@@ -56,6 +56,18 @@ adb devices -l
 * **adb server** (processo que fica escutando no PC)
 * **adbd** (daemon no Android)
 
+### Acesso total a `/data` (só com root)
+
+No **emulador**, às vezes dá:
+
+```powershell
+adb root
+adb shell
+id
+ls /data
+```
+
+
 ## Por que ele é importante (especialmente pra analisar app malicioso)
 
 Sem ADB, você fica preso na UI do aparelho. Com ADB, você ganha **automação, visibilidade e controle**:
