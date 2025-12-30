@@ -1,3 +1,191 @@
+
+# Documentação — Proxy local via USB (ADB Reverse) para testar API
+
+## Objetivo
+
+Rodar um **proxy no PC** que encaminha requisições HTTP para a API HTTPS de teste, e fazer o **app no Android** acessar esse proxy usando **USB**, sem depender de Wi-Fi.
+
+Fluxo final:
+
+```
+APP (Android) -> http://localhost:8092 -> ADB reverse (USB) -> PC:52714 -> Proxy Node -> https://api-osvendas-teste.odontosystem.com.br
+```
+
+---
+
+## Requisitos
+
+* Android com **Depuração USB** ativada
+* `adb` instalado (Android Platform Tools)
+* Node.js instalado no PC
+* Cabo USB decente (isso afeta MUITO a estabilidade)
+
+---
+
+## Portas usadas (exemplo do seu caso)
+
+* **No app (Android):** `localhost:8092`
+* **No PC (Proxy Node):** `localhost:52714`
+* **Target (API real):** `https://api-osvendas-teste.odontosystem.com.br`
+
+Você fez o mapeamento:
+
+* `tcp:8092` (no Android) → `tcp:52714` (no PC)
+
+---
+
+## 1) Rodar o proxy no PC
+
+### `proxy.js` (ideia)
+
+Ele cria um server HTTP local que encaminha tudo para a API HTTPS.
+
+Você roda assim:
+
+```bash
+node proxy.js
+```
+
+E deve aparecer algo como:
+
+```
+Proxy ouvindo em http://localhost:52714 -> https://api-osvendas-teste.odontosystem.com.br
+```
+
+> Dica: com ADB reverse, **não precisa** abrir em `0.0.0.0`, `localhost` já resolve porque o tráfego “entra” localmente no PC.
+
+---
+
+## 2) Configurar o ADB Reverse (USB)
+
+No PowerShell:
+
+```powershell
+adb devices
+adb reverse --remove-all
+adb reverse tcp:8092 tcp:52714
+adb reverse --list
+```
+
+Saída esperada no `--list`:
+
+```
+UsbFfs tcp:8092 tcp:52714
+```
+
+### O que isso faz?
+
+* Quando o app chama `http://localhost:8092` **no celular**,
+* o ADB “intercepta” e manda para `http://127.0.0.1:52714` **no PC** (seu proxy).
+
+---
+
+## 3) Config do app (Dev)
+
+Você precisa apontar o **Dev** pro endpoint que existe “no celular”, ou seja **`localhost:8092`** (porque é a porta que você expôs via reverse).
+
+Exemplo:
+
+```js
+if (TYPE_SYSTEM == 'Dev') {
+  urlApi = 'http://localhost:8092';
+} else {
+  urlApi = 'https://promotorapi.odontosystem.com.br';
+}
+```
+
+Se o app concatena assim:
+`api_url + app_path + '/' + app_vs`
+
+então uma chamada vira:
+`http://localhost:8092/api/v1/...`
+
+---
+
+## Checklist rápido (pra saber se tá tudo certo)
+
+1. Proxy rodando?
+
+* Você vê o log “Proxy ouvindo …:52714 …”
+* Quando o app faz request, você vê logs/requests chegando.
+
+2. Reverse ativo?
+
+```powershell
+adb reverse --list
+```
+
+Tem que aparecer `tcp:8092 tcp:52714`.
+
+3. App no Dev aponta pra:
+
+* `http://localhost:8092` (não é 52714, porque 52714 é no PC)
+
+---
+
+## Problemas comuns (e como identificar)
+
+### A) “Cai direto” / para de funcionar do nada
+
+Normalmente é **USB/ADB reiniciando**.
+
+Sinais:
+
+* `adb reverse --list` fica vazio
+* `adb devices` some ou muda pra “unauthorized”
+
+Solução rápida:
+
+```powershell
+adb reverse --remove-all
+adb reverse tcp:8092 tcp:52714
+```
+
+### B) `ECONNRESET` / `socket hang up`
+
+Rede USB instável OU seu proxy não está lidando bem com conexões abortadas.
+
+* Melhora com cabo/porta melhores
+* (Opcional) usar a versão “casca grossa” do proxy com keep-alive/timeouts
+
+### C) App não pega “localhost”
+
+Em Android, sem `adb reverse`, `localhost` aponta pro próprio celular.
+Com reverse ligado, funciona.
+
+---
+
+## Script PowerShell pronto (setup 1 comando)
+
+Crie um `setup-proxy.ps1`:
+
+```powershell
+adb devices
+adb reverse --remove-all
+adb reverse tcp:8092 tcp:52714
+adb reverse --list
+```
+
+---
+
+## Observações importantes
+
+* Isso é **Android** (ADB). Em **iOS** não funciona assim (aí seria outro esquema).
+* Se você usar outra porta no app, tem que ajustar o reverse:
+
+  * app = 9000 → proxy = 52714:
+
+    ```powershell
+    adb reverse tcp:9000 tcp:52714
+    ```
+
+---
+
+
+
+
+
+
 # Multi Reverse Proxy (Node.js)
 
 Um **proxy reverso HTTP** simples em Node.js que escuta em **portas locais** e encaminha as requisições para **APIs alvo** (HTTP ou HTTPS), preservando **rota** e **query string**.
