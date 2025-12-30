@@ -230,10 +230,11 @@ function createProxy(localPort, target) {
   });
 }
 
-// 8080 -> api-osdentista-hml
-createProxy(52714, 'https://api-osdentista-teste.odontosystem.com.br');
+// 8080 -> api-teste-hml
+createProxy(52714, 'https://api-teste-teste.teste1.com.br');
 
-// 8081 -> api-orcamento-hml
-createProxy(58889, 'https://api-orcamento-teste.odontosystem.com.br');
+// 8081 -> api-teste-hml
+createProxy(58889, 'https://api-teste-teste.teste.com.br');
+
 
 ```
