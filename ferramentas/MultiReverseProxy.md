@@ -351,20 +351,6 @@ Se o backend cair/recusar conexão, você recebe:
 
 ---
 
-## Licença
-
-Defina a sua (ex.: MIT).
-
-```
-
-Se você quiser, eu também adapto o README com:
-- nome oficial do projeto
-- comandos `npm init` + `npm start`
-- config via `.env` (PORTA=ALVO)
-- logs por request (método, url, tempo, status)
-- timeout / keep-alive / limite de payload
-```
-
 # Profeto JS
 
 ```js
@@ -426,3 +412,4 @@ createProxy(58889, 'https://api-teste-teste.teste.com.br');
 
 
 ```
+
