@@ -1,1 +1,2 @@
-# Estudos-mobile
+# Estudos mobile
+dicas e ferramentas 
