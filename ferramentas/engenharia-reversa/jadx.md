@@ -1,31 +1,37 @@
-**JADX** é um **decompilador “DEX → Java”** que já abre **APK/DEX** direto e tenta reconstruir o código Java, além de decodificar recursos do app. Ele vem em duas formas: **CLI (`jadx`)** e **GUI (`jadx-gui`)**.
+# JADX
 
-## O que ele faz
+> **Categoria:** Engenharia Reversa
+> **Plataforma:** Android (analisado no PC)
+> **Quando usar:** abrir APK/DEX e ler o código Java reconstruído sem precisar de etapas extras.
+> **Alternativas:** [dex2jar + JD-GUI](dex2jar.md) (fluxo antigo, em duas etapas).
 
-* Decompila bytecode Dalvik/ART pra **código Java** a partir de **APK, DEX, AAR, AAB, ZIP** etc.
-* Decodifica **AndroidManifest.xml** e recursos de **resources.arsc** e tem **deobfuscator**.
-* Na GUI você tem **busca**, **pular pra declaração**, **achar usos** e mais.
-* Nem sempre sai 100% perfeito (vai ter erro/trecho feio em vários apps).
+## O que faz
 
-## Como usar no Windows (jeito mais fácil: GUI)
+Decompilador "DEX → Java" que abre **APK/DEX** direto e tenta reconstruir o código Java, além de decodificar recursos do app. Vem em duas formas: **CLI (`jadx`)** e **GUI (`jadx-gui`)**.
 
-1. Baixe no GitHub Releases o pacote **`jadx-gui-*-with-jre-win.zip`** (já vem com Java embutido). 
+- Decompila bytecode Dalvik/ART pra **código Java** a partir de **APK, DEX, AAR, AAB, ZIP** etc.
+- Decodifica **AndroidManifest.xml**, recursos de **resources.arsc** e tem **deobfuscator**.
+- GUI tem **busca**, **pular pra declaração**, **achar usos**.
+- Nem sempre sai 100% perfeito (vai ter erro/trecho feio em vários apps).
 
-   * Se baixar o “sem JRE”, aí você precisa ter **Java 11+ 64-bit** instalado.
+## Instalação (Windows — GUI, jeito mais fácil)
 
+1. Baixe no GitHub Releases o pacote **`jadx-gui-*-with-jre-win.zip`** (já vem com Java embutido).
+   - Se baixar o "sem JRE", precisa de **Java 11+ 64-bit** instalado.
 2. Extraia o zip.
+3. Entre na pasta `bin` e rode **`jadx-gui.bat`** (duplo clique funciona).
 
-3. Entre na pasta `bin` e rode **`jadx-gui.bat`** (no Windows dá pra abrir com duplo clique).
+## Como usar
 
-4. No JADX-GUI, abra o **APK/DEX** e navegue pelo código. Use:
+### GUI
 
-* busca geral,
-* “go to declaration”,
-* “find usage”.
+No JADX-GUI, abra o **APK/DEX** e navegue pelo código. Use:
 
-## Como usar no Windows (CLI, pra exportar tudo)
+- busca geral
+- "go to declaration"
+- "find usage"
 
-Depois de extrair, rode pelo `.bat` também. Sintaxe geral:
+### CLI (exportar tudo)
 
 ```bat
 jadx.bat -d out pasta\app.apk
@@ -33,12 +39,21 @@ jadx.bat -d out pasta\app.apk
 
 Opções úteis:
 
-* `-d, --output-dir` (pasta de saída)
-* `-ds` (só fontes)
-* `-dr` (só recursos)
-* `-r` (não decodificar recursos)
-* `-s` (não gerar fontes)
+- `-d, --output-dir` — pasta de saída
+- `-ds` — só fontes
+- `-dr` — só recursos
+- `-r` — não decodificar recursos
+- `-s` — não gerar fontes
+- `-e, --export-gradle` — exporta como projeto Gradle
 
-E dá pra exportar como projeto Gradle:
+## Dicas e pegadinhas
 
-* `-e, --export-gradle`
+- Em apps **muito ofuscados** (ProGuard/R8) ou **Kotlin pesado**, o resultado fica feio — não é falha do JADX, é o estado do bytecode.
+- Pra **APK com splits** (App Bundle), passe `base.apk` + os splits relevantes na linha de comando. JADX entende múltiplos APKs num mesmo job.
+- "Find usages" na GUI é o atalho mais útil pra rastrear chamadas a um método suspeito.
+
+## Ver também
+
+- [dex2jar](dex2jar.md) — quando o JADX falha em algum DEX, dá pra cair pro caminho `dex → jar → JD-GUI`.
+- [JD-GUI](jd-gui.md) — visualizador de `.jar` (não abre `.dex` direto).
+- [Fluxo: extrair APK de app instalado](../../dicas/extrair-apk-de-app-instalado.md)

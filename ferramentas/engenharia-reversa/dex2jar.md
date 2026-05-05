@@ -1,164 +1,51 @@
-### O que é o **dex2jar**
+# dex2jar (d2j-dex2jar)
 
-* Android apps (APK) têm bytecode em **.dex** (ex: `classes.dex`), não em `.class`.
-* **dex2jar** pega um **.dex** e converte pra um **.jar** com **bytecode Java (.class)**.
-* Aí você abre esse `.jar` num decompiler Java (CFR, Fernflower, JD-GUI, etc.) pra ver algo “parecido” com código Java.
+> **Categoria:** Engenharia Reversa
+> **Plataforma:** Android (executado no PC)
+> **Quando usar:** converter `.dex` → `.jar` quando você precisa do bytecode Java pra abrir num decompiler de `.class` (JD-GUI, CFR, Fernflower).
+> **Alternativas:** [JADX](jadx.md) — abre APK direto e já decompila pra Java/Kotlin.
 
-### O que é **d2j-dex2jar**
+## O que faz
 
-* É basicamente **o mesmo conversor**, só que com o **nome “novo”** dentro do pacote **dex-tools (d2j)**.
-* Em versões mais recentes, o comando principal virou `d2j-dex2jar` (script `.sh` no Linux/macOS e `.bat` no Windows).
-* Em muita instalação antiga ou em alguns sistemas, ainda existe `dex2jar` como **alias/symlink** ou script antigo.
+Apps Android (APK) têm bytecode em **`.dex`** (ex: `classes.dex`), não em `.class`. O **dex2jar** converte um `.dex` para um `.jar` com bytecode Java (`.class`). Daí você abre esse `.jar` num decompiler Java.
 
-**Resumindo:**
-✅ `d2j-dex2jar` = “dex2jar moderno” (mesma ideia, tooling atualizado)
-✅ `dex2jar` = nome antigo / atalho / dependendo do pacote que você instalou
+## `dex2jar` vs `d2j-dex2jar`
+
+- **`d2j-dex2jar`** = nome moderno, dentro do pacote **dex-tools (d2j)**. Script `.bat` no Windows.
+- **`dex2jar`** = nome antigo / alias / atalho dependendo da instalação.
+
+Mesma coisa na prática.
 
 ### Entrada e saída
 
-* **Entrada:** `classes.dex` (ou até um `.apk`, dependendo do wrapper/versão que extrai o dex)
-* **Saída:** `algo.jar` (normalmente `*-dex2jar.jar`)
+- **Entrada:** `classes.dex` (ou `.apk`, dependendo do wrapper).
+- **Saída:** `algo.jar` (normalmente `*-dex2jar.jar`).
 
-### Pra que isso serve (na prática)
+## Instalação (Windows)
 
-* Auditoria e engenharia reversa de apps (com permissão).
-* Entender fluxo, chamadas, classes, APIs usadas.
-* Análise de malware Android (também comum).
+1. Baixe o pacote **dex-tools** nas Releases do projeto `pxb1988/dex2jar` no GitHub.
+2. Extraia em qualquer pasta (ex: `C:\tools\dex-tools`).
+3. Adicione essa pasta ao **PATH** ou rode os scripts `.bat` por caminho completo.
 
-### Limitações que você vai ver sempre
+## Como usar
 
-* O `.jar` **não “recria o código fonte original”**. Ele cria bytecode e você decompila isso → sai um código aproximado.
-* **Obfuscação** (ProGuard/R8), **Kotlin**, **reflection**, **dynamic loading**, etc. deixam o resultado bem mais feio.
-* **Multi-dex** (`classes2.dex`, `classes3.dex`) pode exigir converter mais de um dex (dependendo do seu fluxo).
-* Apps com DEX “quebrado”/malformado (comum em malware) podem fazer a conversão falhar.
-
-### Alternativas que muita gente usa hoje
-
-* **jadx**: abre o APK direto e já decompila pra Java/Kotlin de uma vez (bem prático).
-* **apktool**: foca em recursos + smali (bom quando decompilação “alto nível” fica ruim).
-
-
-
-Para extrair o APK de um app rodando em um emulador e analisar com dex2jar, você tem algumas opções:
-
-## Extração do APK
-
-**1. Usando ADB (Android Debug Bridge)**
-
-Se o app já está instalado no emulador:
-
-```bash
-# Liste os pacotes instalados
-adb shell pm list packages
-
-# Encontre o caminho do APK
-adb shell pm path com.exemplo.app
-
-package:/data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/base.apk
-package:/data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_PlayAssetPack.apk
-package:/data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_PlayAssetPack.config.other_countries.apk
-package:/data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_config.arm64_v8a.apk
+```bat
+d2j-dex2jar.bat base.apk
 ```
 
-**App Bundle** (multiple APKs). Isso é comum em apps modernos da Play Store. Veja como proceder:
+Resultado: `base-dex2jar.jar`. Abra no [JD-GUI](jd-gui.md).
 
-## Análise da estrutura
+## Dicas e pegadinhas
 
-- **base.apk** - APK principal com código e recursos básicos
-- **split_PlayAssetPack.apk** - Assets adicionais do jogo/app
-- **split_config.arm64_v8a.apk** - Bibliotecas nativas para arquitetura ARM64
-- **split_*.config.other_countries.apk** - Recursos específicos de região
+- O `.jar` gerado **não recria o código fonte original**. É só bytecode Java; quem reconstrói o código é o decompiler que você usar depois.
+- **Obfuscação** (ProGuard/R8), **Kotlin**, **reflection** e **dynamic loading** deixam o resultado bem mais feio.
+- **Multi-dex** (`classes2.dex`, `classes3.dex`): pode exigir converter mais de um `.dex`.
+- Apps com DEX malformado (comum em malware) podem fazer a conversão **falhar silenciosamente** — confira se o `.jar` saiu com tamanho razoável.
+- Hoje em dia, o [JADX](jadx.md) costuma ser mais prático: abre o APK direto, pula o passo do `.jar`.
 
-## Extração completa
+## Ver também
 
-```bash
-# Extraia todos os APKs
-adb pull /data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/base.apk
-adb pull /data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_PlayAssetPack.apk
-adb pull /data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_config.arm64_v8a.apk
-adb pull /data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/split_PlayAssetPack.config.other_countries.apk
-
-# Ou extraia tudo de uma vez
-adb pull /data/app/com.exemplo.app-Nl2qVTwZE1pc_Tx-jsTeIA==/ ./app_extraido/
-```
-
-## Análise com dex2jar
-
-Para analisar o código, foque no **base.apk**:
-
-```bash
-# Converta o base.apk
-d2j-dex2jar.sh base.apk
-
-# Analise com JD-GUI
-jd-gui base-dex2jar.jar
-```
-
-## Reconstruir APK único (opcional)
-
-Se precisar de um APK único para outras ferramentas:
-
-```bash
-# Use APKEditor ou SAI (Split APKs Installer)
-# Ou combine manualmente com apktool:
-
-apktool d base.apk -o base_decoded
-apktool d split_config.arm64_v8a.apk -o split_decoded
-
-# Mescle os recursos e reconstrua
-```
-
-## Recomendação para análise profunda
-
-Use **jadx** que lida melhor com múltiplos APKs:
-
-```bash
-jadx base.apk split_PlayAssetPack.apk -d output_analise/
-```
-
-O **base.apk** contém todo o código Java/Kotlin principal. Os splits contêm principalmente recursos e bibliotecas nativas (.so files). Para engenharia reversa, o base.apk é seu alvo primário. Precisa analisar as bibliotecas nativas também?
-
-
-
-**2. Diretamente do sistema de arquivos**
-
-Se você tem acesso root no emulador:
-
-```bash
-adb shell
-su
-cd /data/app/
-ls
-# Copie o APK desejado
-```
-
-**3. Usando ferramentas de terceiros**
-
-- **APK Extractor** (app para Android)
-- **Apktool** para desempacotar
-- **jadx** ou **jadx-gui** (alternativa moderna ao dex2jar)
-
-## Análise com dex2jar
-
-Após extrair o APK:
-
-```bash
-# Converta APK para JAR
-d2j-dex2jar.sh app.apk
-
-# O resultado será app-dex2jar.jar
-# Depois use JD-GUI ou outra ferramenta para analisar
-jd-gui app-dex2jar.jar
-```
-
-## Dica profissional
-
-Considere usar **jadx** ao invés de dex2jar - é mais moderno e eficiente:
-
-```bash
-jadx app.apk -d output_dir
-# ou use jadx-gui para interface gráfica
-```
-
-
-
+- [JADX](jadx.md) — alternativa moderna ao fluxo `dex2jar + JD-GUI`.
+- [JD-GUI](jd-gui.md) — visualizador para o `.jar` gerado.
+- apktool *(a documentar)* — foca em recursos + smali (bom quando decompilação alto nível fica ruim).
+- [Fluxo: extrair APK de app instalado](../../dicas/extrair-apk-de-app-instalado.md) — o "como pegar o APK" mora lá agora.

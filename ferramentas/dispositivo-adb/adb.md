@@ -1,41 +1,50 @@
+# ADB (Android Debug Bridge)
 
-## O que é (na prática) ADB
+> **Categoria:** Dispositivo / ADB
+> **Plataforma:** Android
+> **Quando usar:** controlar um dispositivo (físico ou emulador) pelo PC — instalar/desinstalar app, ver logs, puxar arquivos, abrir shell, port forward.
+> **Alternativas:** nenhuma direta — ADB é a ponte oficial. Para inspeção visual, complementa com Android Studio.
 
-**ADB = Android Debug Bridge**. É a “ponte” oficial pra você controlar um Android (emulador ou aparelho) pelo PC via **USB** ou **rede**. Ele faz isso com 3 peças:
+## O que faz
 
+**ADB = Android Debug Bridge**. Ponte oficial pra controlar um Android (emulador ou aparelho) pelo PC via **USB** ou **rede**. Funciona em três peças:
 
-* **Celular/tablet** com *Depuração USB* ligada
-* **Emuladores Android** (Android Studio Emulator, Genymotion, alguns casos de MEmu/LDPlayer/BlueStacks se eles expõem ADB)
+- **adb client** (comando que você roda no PC)
+- **adb server** (processo que escuta no PC)
+- **adbd** (daemon no Android)
 
-O comando direto pra ver o que está conectado é:
+## Instalação (Windows)
+
+Vem no **Android SDK Platform Tools**. Baixe direto do site do Android Developers ou via Android Studio. Adicione `...\Android\Sdk\platform-tools` ao PATH.
+
+Teste:
+
+```bash
+adb version
+```
+
+## Como usar
+
+### Listar dispositivos conectados
 
 ```bash
 adb devices -l
 ```
 
-Vai listar algo tipo:
+Estados possíveis:
 
-* `device` = conectado e autorizado
-* `unauthorized` = o aparelho não autorizou (precisa aceitar a janela de “Confiar neste computador?” no Android)
-* `offline` = conexão ruim / travada
+- `device` — conectado e autorizado
+- `unauthorized` — falta aceitar "Confiar neste computador?" no Android
+- `offline` — conexão ruim/travada
 
-### Ver também emuladores
-
-Se o emulador estiver rodando e tiver ADB ativo, ele aparece como:
-
-* `emulator-5554` (comum no Android Studio)
-
-Se você quer ver **mais detalhes** de cada um:
+Detalhes de um device específico:
 
 ```bash
-adb devices -l
 adb -s <ID> shell getprop ro.product.model
 adb -s <ID> shell getprop ro.build.version.release
 ```
 
-### Se não aparece nada
-
-1. Confere se o ADB está ok e reinicia o servidor:
+### Reiniciar o servidor (quando "some" um device)
 
 ```bash
 adb kill-server
@@ -43,42 +52,7 @@ adb start-server
 adb devices -l
 ```
 
-2. Para **celular**: liga *Depuração USB* e aceita a autorização na tela.
-
-3. Para **emulador**: alguns não expõem ADB por padrão. Se ele tiver ADB via TCP, dá pra conectar assim (exemplo):
-
-```bash
-adb connect 127.0.0.1:5555
-adb devices -l
-```
-
-* **adb client** (o comando que você roda no PC)
-* **adb server** (processo que fica escutando no PC)
-* **adbd** (daemon no Android)
-
-### Acesso total a `/data` (só com root)
-
-No **emulador**, às vezes dá:
-
-```powershell
-adb root
-adb shell
-id
-ls /data
-```
-
-
-## Por que ele é importante (especialmente pra analisar app malicioso)
-
-Sem ADB, você fica preso na UI do aparelho. Com ADB, você ganha **automação, visibilidade e controle**:
-
-### 1) Instalar/rodar/forçar comportamento do app
-
-* instalar/desinstalar sem tocar no celular
-* abrir Activities/Intents
-* limpar dados e “resetar” o app rápido
-
-Comandos úteis:
+### Instalar / abrir / limpar app
 
 ```bash
 adb install app.apk
@@ -87,9 +61,7 @@ adb shell pm clear pacote
 adb uninstall pacote
 ```
 
-### 2) Coletar evidências rápido (logs e estado do sistema)
-
-O básico de análise dinâmica é ver o que o app faz enquanto roda:
+### Coletar logs e estado
 
 ```bash
 adb logcat
@@ -98,15 +70,13 @@ adb shell dumpsys activity
 adb bugreport
 ```
 
-Isso ajuda a pegar:
+Pega:
 
-* crashes e erros
-* chamadas suspeitas (rede, permissões, serviços, receivers)
-* comportamento em background
+- crashes e erros
+- chamadas suspeitas (rede, permissões, serviços, receivers)
+- comportamento em background
 
-### 3) Inspecionar arquivos e artefatos
-
-Puxar coisas do device pro PC (configs, bancos, cache etc. — quando permitido):
+### Inspecionar arquivos
 
 ```bash
 adb pull /sdcard/Download/arquivo .
@@ -114,81 +84,47 @@ adb shell ls -la
 adb shell cat /proc/net/tcp
 ```
 
-Obs: acessar `/data/data/<pacote>` normalmente exige **root** ou `run-as` (se o app for debuggable).
+Acessar `/data/data/<pacote>` exige **root** ou `run-as` (se o app for debuggable).
 
-### 4) Shell remoto pra triagem “ao vivo”
-
-Você ganha um terminal no Android:
+### Shell remoto
 
 ```bash
 adb shell
 ```
 
-Daí usa `pm`, `am`, `ps`, `top`, `getprop`, `ip`, etc. Pra malware isso é ouro pra checar serviços, processos, props, rede, permissões.
+Daí usa `pm`, `am`, `ps`, `top`, `getprop`, `ip`, etc.
 
-### 5) Encaminhamento de portas e controle externo
-
-Port-forward é muito usado pra instrumentação (Frida, serviços locais, debug):
+### Port forwarding (instrumentação, Frida, debug)
 
 ```bash
 adb forward tcp:27042 tcp:27042
 adb reverse tcp:8080 tcp:8080
 ```
 
-## O lado “segurança” do ADB (não vacila aqui)
+`forward` = PC → device. `reverse` = device → PC.
 
-* **ADB ligado em aparelho pessoal é risco.** Se alguém tiver acesso físico + PC autorizado, dá pra fazer estrago.
-* Em laboratório, mantém:
+### Acesso root no emulador
 
-  * device/emulador isolado, sem conta pessoal
-  * **revogar autorizações** quando terminar (Opções do desenvolvedor)
-  * preferir USB; ADB via rede só quando você precisar e em rede isolada
+Em emuladores **AOSP/google_apis** (não em `google_apis_playstore`):
 
-Se você me disser **emulador ou aparelho físico** e **qual objetivo (logcat, captura de tráfego, Frida/MobSF)** eu te passo um fluxo de comandos “padrão” pra triagem rápida de APK malicioso.
-
-
-Lista arquivos do projeto
-```
-adb -s 4AD01LH0H shell pm path com.seu.app
+```bash
+adb root
+adb shell
+id
+ls /data
 ```
 
-## comando para bixar apk pelo usb
-```
-$serial="4AD01LH0H"
-$pkg="com.seu.app"
+## Dicas e pegadinhas
 
-# pega todos os caminhos e remove o prefixo "package:"
-$paths = (adb -s $serial shell pm path $pkg) -replace '^package:',''
+- **Cabo USB ruim** é a causa nº 1 de "ADB cai sozinho". Vale trocar antes de culpar driver/Windows.
+- Em **aparelho pessoal**, ADB ligado é risco. Em laboratório: device isolado, sem conta pessoal, **revogar autorizações** quando terminar (Opções do desenvolvedor).
+- Prefira **USB** em vez de ADB via rede. Rede só em ambiente isolado.
+- Se múltiplos devices conectados, sempre use `-s <serial>` pra evitar comando ir pro device errado.
 
-# cria pasta
-New-Item -ItemType Directory -Force -Path ".\$pkg" | Out-Null
+## Ver também
 
-# baixa tudo
-foreach ($p in $paths) {
-  adb -s $serial pull $p ".\$pkg\"
-}
-
-```
-
-No final você vai ter uma pasta `.\com.seu.app\` com `base.apk` + todos os splits.
-
-## Reinstalar em outro aparelho (mesma arquitetura) ou depois de mexer em arquivos sem “modificar código”
-
-Dentro da pasta onde estão os APKs:
-
-```powershell
-adb -s 4AD01LH0H install-multiple -r base.apk split_*.apk
-```
-
-> Se for instalar em **outro** device, troca o `-s` pelo serial dele.
-
-## Sobre “modificar o projeto”
-
-* Do celular você **não baixa o “projeto”** (Android Studio/Unity). Só dá pra baixar **APK(s)**.
-* Se isso for **Unity (parece que é)**: mesmo extraindo o APK, você **não recupera o projeto Unity**. Dá pra inspecionar recursos, libs, manifest, etc., mas não volta pro “projeto editável” como se tivesse os arquivos originais.
-
-## O que dá pra fazer com segurança (análise)
-
-* **Android Studio → Build → Analyze APK…** e abrir `base.apk` (e olhar splits também).
-* Ver `AndroidManifest.xml`, permissões, libs nativas, assets, etc.
-
+- [adb-proxy-global](adb-proxy-global.md) — configurar proxy global do Android via ADB.
+- [emulator](emulator.md) — controlar emuladores pela CLI.
+- [Fluxo: extrair APK de app instalado](../../dicas/extrair-apk-de-app-instalado.md) — `pm path` + `adb pull` em um só lugar.
+- [Fluxo: capturar tráfego HTTPS no Android](../../dicas/capturar-trafego-https-android.md)
+- [Fluxo: validar evento Google Analytics](../../dicas/validar-evento-google-analytics.md)
