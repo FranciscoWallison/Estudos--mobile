@@ -12,6 +12,12 @@
 - **ADB** → [adb.md](ferramentas/dispositivo-adb/adb.md)
 - **Analytics (debug GA/Firebase)** → [google-analytics-debugger.md](ferramentas/analytics-debug/google-analytics-debugger.md)
 - **APK — extrair de app instalado** → [extrair-apk-de-app-instalado.md](dicas/extrair-apk-de-app-instalado.md)
+- **Avaliação in-app (popup)** → [in-app-review/](ferramentas/in-app-review/README.md)
+- **Avaliação — Android nativo** → [android-nativo.md](ferramentas/in-app-review/android-nativo.md)
+- **Avaliação — iOS nativo** → [ios-nativo.md](ferramentas/in-app-review/ios-nativo.md)
+- **Avaliação — React Native** → [react-native.md](ferramentas/in-app-review/react-native.md)
+- **Avaliação — Flutter** → [flutter.md](ferramentas/in-app-review/flutter.md)
+- **Avaliação — Cordova/Ionic** → [cordova-ionic.md](ferramentas/in-app-review/cordova-ionic.md)
 - **APK — decompilar** → [jadx.md](ferramentas/engenharia-reversa/jadx.md)
 - **Charles Proxy** → [charles.md](ferramentas/rede-proxy/charles.md)
 - **Cert (instalar no Android)** → [capturar-trafego-https-android.md](dicas/capturar-trafego-https-android.md#4-instale-o-certificado-do-proxy-no-android)
@@ -59,6 +65,14 @@
 [Categoria →](ferramentas/analytics-debug/README.md)
 - [Google Analytics Debugger](ferramentas/analytics-debug/google-analytics-debugger.md)
 
+### In-App Review
+[Categoria →](ferramentas/in-app-review/README.md)
+- [Android nativo (Play Core)](ferramentas/in-app-review/android-nativo.md)
+- [iOS nativo (StoreKit)](ferramentas/in-app-review/ios-nativo.md)
+- [React Native](ferramentas/in-app-review/react-native.md)
+- [Flutter](ferramentas/in-app-review/flutter.md)
+- [Cordova / Ionic / Capacitor](ferramentas/in-app-review/cordova-ionic.md)
+
 ### Performance
 [Categoria →](ferramentas/performance/README.md)
 - [Perfetto](ferramentas/performance/perfetto.md)
@@ -94,6 +108,7 @@
 | "App está com jank / startup lento" | [Perfetto](ferramentas/performance/perfetto.md) |
 | "Quero hookar uma função específica do app" | [Frida](ferramentas/seguranca-pentest/frida.md) |
 | "Não sei nem rodar `adb devices`" | [ADB](ferramentas/dispositivo-adb/adb.md) |
+| "Quero pedir avaliação dentro do app" | [In-App Review](ferramentas/in-app-review/README.md) → escolha sua stack |
 
 ---
 

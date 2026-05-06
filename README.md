@@ -17,6 +17,7 @@ Cada **fluxo** em [dicas/](dicas/) é um passo-a-passo end-to-end pra uma tarefa
 | Dispositivo / ADB | Controlar device físico ou emulador pelo PC: ADB, emulator, proxy global. | [ferramentas/dispositivo-adb/](ferramentas/dispositivo-adb/README.md) |
 | Rede / Proxy | Redirecionar ou inspecionar tráfego de rede dos apps. | [ferramentas/rede-proxy/](ferramentas/rede-proxy/README.md) |
 | Analytics / Debug | Inspecionar eventos de tracking (GA, Firebase, GTM) em tempo real. | [ferramentas/analytics-debug/](ferramentas/analytics-debug/README.md) |
+| In-App Review | Popup de avaliação nativo dentro do app — guias por stack (nativo, RN, Flutter, Ionic). | [ferramentas/in-app-review/](ferramentas/in-app-review/README.md) |
 | Performance | Medir CPU, memória, FPS, startup, jank. *(em construção)* | [ferramentas/performance/](ferramentas/performance/README.md) |
 | Segurança / Pentest | Frida, Objection, MobSF, drozer, apktool. *(em construção)* | [ferramentas/seguranca-pentest/](ferramentas/seguranca-pentest/README.md) |
 | iOS | Xcode tools, libimobiledevice, Proxyman. *(em construção)* | [ferramentas/ios/](ferramentas/ios/README.md) |
@@ -58,8 +59,9 @@ Padrões (nomenclatura, cabeçalho, links): [CONVENCOES.md](CONVENCOES.md).
 │   ├── dispositivo-adb/
 │   ├── rede-proxy/
 │   ├── analytics-debug/
-│   ├── performance/           # placeholder
-│   ├── seguranca-pentest/     # placeholder
+│   ├── in-app-review/
+│   ├── performance/
+│   ├── seguranca-pentest/
 │   └── ios/                   # placeholder
 ├── dicas/                     # fluxos end-to-end
 └── modelos/                   # templates copiáveis
