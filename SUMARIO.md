@@ -10,7 +10,14 @@
 ## Por palavra-chave (A-Z)
 
 - **ADB** → [adb.md](ferramentas/dispositivo-adb/adb.md)
+- **Agents IA / AppFunctions / App Intents** → [app-functions/](ferramentas/app-functions/README.md)
+- **Agents — Android (AppFunctions)** → [android-nativo.md](ferramentas/app-functions/android-nativo.md)
+- **Agents — iOS (App Intents)** → [ios-nativo.md](ferramentas/app-functions/ios-nativo.md)
+- **Agents — React Native** → [react-native.md](ferramentas/app-functions/react-native.md)
+- **Agents — Flutter** → [flutter.md](ferramentas/app-functions/flutter.md)
+- **Agents — Cordova/Ionic** → [cordova-ionic.md](ferramentas/app-functions/cordova-ionic.md)
 - **Analytics (debug GA/Firebase)** → [google-analytics-debugger.md](ferramentas/analytics-debug/google-analytics-debugger.md)
+- **Apple Intelligence (expor app)** → [ios-nativo.md](ferramentas/app-functions/ios-nativo.md)
 - **APK — extrair de app instalado** → [extrair-apk-de-app-instalado.md](dicas/extrair-apk-de-app-instalado.md)
 - **Avaliação in-app (popup)** → [in-app-review/](ferramentas/in-app-review/README.md)
 - **Avaliação — Android nativo** → [android-nativo.md](ferramentas/in-app-review/android-nativo.md)
@@ -26,6 +33,7 @@
 - **Emulador Android (CLI)** → [emulator.md](ferramentas/dispositivo-adb/emulator.md)
 - **Firebase Analytics — debug** → [google-analytics-debugger.md](ferramentas/analytics-debug/google-analytics-debugger.md#android--ga4--firebase-analytics)
 - **Frida** → [frida.md](ferramentas/seguranca-pentest/frida.md)
+- **Gemini (expor app pra IA chamar)** → [android-nativo.md](ferramentas/app-functions/android-nativo.md)
 - **HTTPS — capturar tráfego** → [capturar-trafego-https-android.md](dicas/capturar-trafego-https-android.md)
 - **JADX** → [jadx.md](ferramentas/engenharia-reversa/jadx.md)
 - **Jank / Performance — investigar** → [perfetto.md](ferramentas/performance/perfetto.md)
@@ -37,6 +45,7 @@
 - **Proxy global no Android** → [adb-proxy-global.md](ferramentas/dispositivo-adb/adb-proxy-global.md)
 - **Reverse (adb reverse)** → [multi-reverse-proxy.md](ferramentas/rede-proxy/multi-reverse-proxy.md) + [capturar-trafego-https-android.md](dicas/capturar-trafego-https-android.md#caminho-b--adb-reverse--proxy-local)
 - **Root no emulador** → [emulator.md](ferramentas/dispositivo-adb/emulator.md#dicas-e-pegadinhas)
+- **Siri (expor app pra IA chamar)** → [ios-nativo.md](ferramentas/app-functions/ios-nativo.md)
 - **SSL pinning — bypass** → [objection.md](ferramentas/seguranca-pentest/objection.md#bypass-de-ssl-pinning)
 - **Startup lento** → [perfetto.md](ferramentas/performance/perfetto.md#caminho-3--trace-de-startup-automatizado)
 
@@ -72,6 +81,14 @@
 - [React Native](ferramentas/in-app-review/react-native.md)
 - [Flutter](ferramentas/in-app-review/flutter.md)
 - [Cordova / Ionic / Capacitor](ferramentas/in-app-review/cordova-ionic.md)
+
+### App Functions / Intents (expor o app pra IA)
+[Categoria →](ferramentas/app-functions/README.md)
+- [Android nativo (AppFunctions + KSP)](ferramentas/app-functions/android-nativo.md)
+- [iOS nativo (App Intents + Apple Intelligence)](ferramentas/app-functions/ios-nativo.md)
+- [React Native](ferramentas/app-functions/react-native.md)
+- [Flutter](ferramentas/app-functions/flutter.md)
+- [Cordova / Ionic / Capacitor](ferramentas/app-functions/cordova-ionic.md)
 
 ### Performance
 [Categoria →](ferramentas/performance/README.md)
@@ -109,6 +126,7 @@
 | "Quero hookar uma função específica do app" | [Frida](ferramentas/seguranca-pentest/frida.md) |
 | "Não sei nem rodar `adb devices`" | [ADB](ferramentas/dispositivo-adb/adb.md) |
 | "Quero pedir avaliação dentro do app" | [In-App Review](ferramentas/in-app-review/README.md) → escolha sua stack |
+| "Quero que o Gemini/Siri use meu app" | [App Functions / App Intents](ferramentas/app-functions/README.md) → escolha sua stack |
 
 ---
 

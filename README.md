@@ -18,6 +18,7 @@ Cada **fluxo** em [dicas/](dicas/) é um passo-a-passo end-to-end pra uma tarefa
 | Rede / Proxy | Redirecionar ou inspecionar tráfego de rede dos apps. | [ferramentas/rede-proxy/](ferramentas/rede-proxy/README.md) |
 | Analytics / Debug | Inspecionar eventos de tracking (GA, Firebase, GTM) em tempo real. | [ferramentas/analytics-debug/](ferramentas/analytics-debug/README.md) |
 | In-App Review | Popup de avaliação nativo dentro do app — guias por stack (nativo, RN, Flutter, Ionic). | [ferramentas/in-app-review/](ferramentas/in-app-review/README.md) |
+| App Functions / Intents | Expor funções do app pro Gemini / Siri / Apple Intelligence chamarem por linguagem natural. | [ferramentas/app-functions/](ferramentas/app-functions/README.md) |
 | Performance | Medir CPU, memória, FPS, startup, jank. *(em construção)* | [ferramentas/performance/](ferramentas/performance/README.md) |
 | Segurança / Pentest | Frida, Objection, MobSF, drozer, apktool. *(em construção)* | [ferramentas/seguranca-pentest/](ferramentas/seguranca-pentest/README.md) |
 | iOS | Xcode tools, libimobiledevice, Proxyman. *(em construção)* | [ferramentas/ios/](ferramentas/ios/README.md) |
@@ -60,6 +61,7 @@ Padrões (nomenclatura, cabeçalho, links): [CONVENCOES.md](CONVENCOES.md).
 │   ├── rede-proxy/
 │   ├── analytics-debug/
 │   ├── in-app-review/
+│   ├── app-functions/
 │   ├── performance/
 │   ├── seguranca-pentest/
 │   └── ios/                   # placeholder
